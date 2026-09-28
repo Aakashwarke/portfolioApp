@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 0 0% 4%;
+        --foreground: 0 0% 96%;
+        --accent: 75 97% 65%;
+        --muted: 0 0% 53%;
+        --border: 0 0% 15%;
+        --card: 0 0% 7%;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    html {
+        /* Lenis drives the scroll; native smooth scrolling would fight it. */
+        scroll-behavior: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans antialiased;
+        overflow-x: hidden;
+    }
+
+    ::selection {
+        @apply bg-accent text-background;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        @apply bg-background;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-border rounded-full;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-muted;
+    }
+
+    /* The custom cursor replaces the pointer on devices that actually have one. */
+    @media (hover: hover) and (pointer: fine) {
+        body.custom-cursor-active,
+        body.custom-cursor-active * {
+            cursor: none;
+        }
+    }
+}
+
+@layer components {
+    .section-padding {
+        @apply py-24 md:py-32 lg:py-40;
+    }
+
+    /* Vertical text used by the sticky email rail. */
+    .vertical-rl {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+    }
+
+    /* Subtle film grain laid over the whole page. */
+    .grain::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        pointer-events: none;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .link-underline {
+        @apply relative inline-block;
+    }
+    .link-underline::after {
+        content: '';
+        @apply absolute bottom-0 left-0 h-px w-0 bg-accent transition-all duration-300 ease-smooth;
+    }
+    .link-underline:hover::after {
+        @apply w-full;
+    }
+}
+
+@layer utilities {
+    .text-stroke {
+        -webkit-text-stroke: 1px hsl(var(--foreground) / 0.35);
+        color: transparent;
+    }
+    .text-stroke-accent {
+        -webkit-text-stroke: 1px hsl(var(--accent));
+        color: transparent;
+    }
+}
+
+/* Respect users who ask for less motion: GSAP entrances still run, but instantly. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
